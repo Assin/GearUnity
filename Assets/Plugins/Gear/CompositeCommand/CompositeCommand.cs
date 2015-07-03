@@ -14,7 +14,7 @@ public class CompositeCommand : AbstractCommand{
 	/// <summary>
 	/// 在SEQUENCE模式下，完成一个子命令就会调用一下这个回调
 	/// </summary>
-	public event OnCommandItemCompleteDelegate OnCommandItemComplete;
+	public OnCommandItemCompleteDelegate OnCommandItemComplete;
 	public bool _isPlaying = false;
 	public int _totalCount = 0;
 
@@ -146,13 +146,13 @@ public class CompositeCommand : AbstractCommand{
 	}
 
 	protected virtual void AddDelegateToCommand(AbstractCommand command){
-		command.OnCommandComplete += OnExecutingCommandItemComplete;
-		command.OnCommandError += OnExecutingCommandItemError;
+		command.OnCommandComplete = OnExecutingCommandItemComplete;
+		command.OnCommandError = OnExecutingCommandItemError;
 	}
 
 	protected virtual void RemoveDelegateToCommand(AbstractCommand command){
-		command.OnCommandComplete -= OnExecutingCommandItemComplete;
-		command.OnCommandError -= OnExecutingCommandItemError;
+		command.OnCommandComplete = null;
+		command.OnCommandError = null;
 	}
 
 	protected virtual void OnExecutingCommandItemComplete(AbstractCommand command){

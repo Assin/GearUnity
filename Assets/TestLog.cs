@@ -11,10 +11,10 @@ public class TestLog : MonoBehaviour, ITicker{
 
 		ConsoleCommand command;
 		CompositeCommand cc = new CompositeCommand(CompositeCommandMode.SEQUENCE);
-		cc.OnCommandItemComplete += delegate(AbstractCommand _command) {
+		cc.OnCommandItemComplete = delegate(AbstractCommand _command) {
 			Debug.Log("Item Complete" + " " + (_command as ConsoleCommand).index.ToString());
 		};
-		cc.OnCommandComplete += delegate(AbstractCommand _command) {
+		cc.OnCommandComplete = delegate(AbstractCommand _command) {
 			Debug.Log("All Complete");
 		};
 		int max = 10;

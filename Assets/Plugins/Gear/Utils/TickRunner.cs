@@ -29,7 +29,7 @@ using System.Collections;
 
 public class TickRunner{
 	private ArrayList tickerList;
-	private uint prevMSTimeStamp;
+///	private uint prevMSTimeStamp;
 	private static TickRunner instance;
 
 	/// <summary>
@@ -48,8 +48,11 @@ public class TickRunner{
 	/// Init this instance.
 	/// </summary>
 	public void Init(){
-		tickerList = new ArrayList();
-		prevMSTimeStamp = (uint)(Time.time * 1000);
+		if(tickerList == null)
+		{
+			tickerList = new ArrayList();
+		}
+///		prevMSTimeStamp = (uint)(Time.realtimeSinceStartup * 1000);
 	}
 
 	/// <summary>
@@ -58,7 +61,7 @@ public class TickRunner{
 	/// <param name="ticker">Ticker.</param>
 	/// <param name="delayMSTime">Delay MS time.</param>
 	public void AddTicker(ITicker ticker, int delayMSTime = -1){
-		uint lastMSTimeStamp = (uint)(Time.time * 1000);
+		uint lastMSTimeStamp = (uint)(Time.realtimeSinceStartup * 1000);
 		TickVO tempTicker;
 		if (HasTicker(ticker)) {
 			//如果已经存在，那么更新下他
@@ -66,11 +69,11 @@ public class TickRunner{
 		} else {
 			//没有则新建一个
 			tempTicker = new TickVO();
+			tickerList.Add(tempTicker);
 		}
 		tempTicker.ticker = ticker;
 		tempTicker.delayMSTime = delayMSTime;
 		tempTicker.lastMSTimeStamp = lastMSTimeStamp;
-		tickerList.Add(tempTicker);
 	}
 
 	/// <summary>
@@ -80,7 +83,8 @@ public class TickRunner{
 	/// <param name="ticker">Ticker.</param>
 	public bool HasTicker(ITicker ticker){
             
-		foreach (TickVO t in tickerList) {
+		for (int i = 0; i < tickerList.Count; i++) {
+			TickVO t = tickerList[i] as TickVO;
 			if (t.ticker == ticker) {
 				return true;
 			}
@@ -92,7 +96,8 @@ public class TickRunner{
         if (tickerList == null) {
             return null;
         }
-		foreach (TickVO t in tickerList) {
+		for (int i = 0; i < tickerList.Count; i++) {
+			TickVO t = tickerList[i] as TickVO;
 			if (t.ticker == ticker) {
 				return t;
 			}
@@ -105,7 +110,8 @@ public class TickRunner{
 	/// </summary>
 	/// <param name="ticker">Ticker.</param>
 	public void RemoveTicker(ITicker ticker){
-		foreach (TickVO t in tickerList) {
+		for (int i = 0; i < tickerList.Count; i++) {
+			TickVO t = tickerList[i] as TickVO;
 			if (t.ticker == ticker) {
 				t.ticker = null;
 			}
@@ -117,10 +123,15 @@ public class TickRunner{
 	/// Update this instance.
 	/// </summary>
 	public void Update(){
-		uint currentMSTimeStamp = (uint)(Time.time * 1000);
-		uint delay = (currentMSTimeStamp - prevMSTimeStamp);
+		if(tickerList == null)
+		{
+			return;
+		}
+		uint currentMSTimeStamp = (uint)(Time.realtimeSinceStartup * 1000);
+///		uint delay = (currentMSTimeStamp - prevMSTimeStamp);
             
-		foreach (TickVO t in tickerList) {
+		for (int i = 0; i < tickerList.Count; i++) {
+			TickVO t = tickerList[i] as TickVO;
 			if (t.ticker == null) {
 				continue;
 			}
@@ -130,10 +141,11 @@ public class TickRunner{
 				t.lastMSTimeStamp = currentMSTimeStamp;
 			}
 		}
-		prevMSTimeStamp = currentMSTimeStamp;
+///		prevMSTimeStamp = currentMSTimeStamp;
 
 		//清理下要删除的TickVO
-		foreach (TickVO removeTick in tickerList) {
+		for (int i = 0; i < tickerList.Count; i++) {
+			TickVO removeTick = tickerList[i] as TickVO;
 			if (removeTick.ticker == null) {
 				tickerList.Remove(removeTick);
 				break;

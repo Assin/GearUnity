@@ -4,17 +4,27 @@ public abstract class AbstractCommand {
 	public delegate void OnCommandCompleteDelegate(AbstractCommand command);
 	public delegate void OnCommandErrorDelegate(AbstractCommand command);
 	
-	public event OnCommandCompleteDelegate OnCommandComplete;
-	public event OnCommandErrorDelegate OnCommandError;
+	public OnCommandCompleteDelegate OnCommandComplete;
+	public OnCommandErrorDelegate OnCommandError;
 
+	public float delayInvokeComplete = 0f;
 	/// <summary>
 	/// 开始执行命令
 	/// </summary>
 	public abstract void Execute();
 
 	protected virtual void InvokeComplete(){
-		if (OnCommandComplete != null) {
-			OnCommandComplete(this);
+		if(delayInvokeComplete == 0f)
+		{
+			if (OnCommandComplete != null) {
+				OnCommandComplete(this);
+			}
+		}else{
+			EnterFrameTimer.SetTimeOut((uint)(delayInvokeComplete * 1000), delegate() {
+				if (OnCommandComplete != null) {
+					OnCommandComplete(this);
+				}
+			});
 		}
 	}
 

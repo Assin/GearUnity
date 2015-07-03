@@ -42,6 +42,9 @@ public class EnterFrameTimer : ITicker{
 	private bool _running;
 	private uint _startTime;
 	private uint _currentTime;
+
+	public delegate void OnTimeOutDelegate();
+
 	public delegate void OnTimerDelegate();
 
 	public delegate void OnCompleteDelegate();
@@ -164,6 +167,18 @@ public class EnterFrameTimer : ITicker{
 				}
 			}
 		}
+	}
+
+	public static void SetTimeOut(uint delay, OnTimeOutDelegate OnTimeOut){
+		EnterFrameTimer timer = new EnterFrameTimer(delay, 1);
+		timer.OnComplete = delegate() {
+			timer.Stop();
+			if(OnTimeOut != null)
+			{
+				OnTimeOut();
+			}
+		};
+		timer.Start();
 	}
 }
 
