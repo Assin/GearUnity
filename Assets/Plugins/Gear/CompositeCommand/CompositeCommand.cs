@@ -179,4 +179,10 @@ public class CompositeCommand : AbstractCommand{
 	protected virtual void OnExecutingCommandItemError(AbstractCommand command){
 	}
 
+	public void ClearAllCommand(){
+		_isPlaying = false;
+		_totalCount = 0;
+		if(_commands != null)
+			_commands.Clear();
+	}
 }
